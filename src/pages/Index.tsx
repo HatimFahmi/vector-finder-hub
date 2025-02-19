@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { pipeline } from '@huggingface/transformers';
 import { useToast } from '@/components/ui/use-toast';
+import { Progress } from '@/components/ui/progress';
 import ImageUploader from '@/components/ImageUploader';
 import ImagePreview from '@/components/ImagePreview';
 import ResultGrid from '@/components/ResultGrid';
@@ -9,24 +10,30 @@ import ResultGrid from '@/components/ResultGrid';
 const Index = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState(0);
   const [similarImages, setSimilarImages] = useState<string[]>([]);
   const { toast } = useToast();
 
   const handleImageSelect = async (file: File) => {
     try {
       setLoading(true);
+      setProgress(10); // Start progress
+      
       const imageUrl = URL.createObjectURL(file);
       setSelectedImage(imageUrl);
+      setProgress(30); // Image loaded
 
       // Initialize the image classification pipeline with a browser-optimized model
       const classifier = await pipeline(
         'image-classification',
         'onnx-community/mobilenetv4_conv_small.e2400_r224_in1k'
       );
+      setProgress(60); // Model loaded
 
       // Process the image
       const results = await classifier(imageUrl);
       console.log('Classification results:', results);
+      setProgress(80); // Image processed
       
       // For demo purposes, we're using placeholder similar images
       // In a real app, you would use the embeddings to find similar images
@@ -35,6 +42,7 @@ const Index = () => {
         'https://images.unsplash.com/photo-1682687982167-d7fb3ed8541d',
         'https://images.unsplash.com/photo-1682687982465-c1e91c4b6b46',
       ]);
+      setProgress(100); // Similar images found
 
       toast({
         title: "Success",
@@ -48,7 +56,10 @@ const Index = () => {
         variant: "destructive",
       });
     } finally {
-      setLoading(false);
+      setTimeout(() => {
+        setLoading(false);
+        setProgress(0);
+      }, 500); // Reset progress after a small delay
     }
   };
 
@@ -94,14 +105,22 @@ const Index = () => {
               onClear={() => {
                 setSelectedImage(null);
                 setSimilarImages([]);
+                setProgress(0);
               }}
             />
           )}
 
           {loading && (
-            <div className="flex justify-center">
-              <div className="animate-pulse text-gray-600">
-                Processing image...
+            <div className="space-y-4">
+              <Progress value={progress} className="w-full" />
+              <div className="flex justify-center">
+                <div className="text-sm text-gray-600">
+                  {progress < 30 && "Uploading image..."}
+                  {progress >= 30 && progress < 60 && "Loading model..."}
+                  {progress >= 60 && progress < 80 && "Processing image..."}
+                  {progress >= 80 && progress < 100 && "Finding similar images..."}
+                  {progress === 100 && "Complete!"}
+                </div>
               </div>
             </div>
           )}
