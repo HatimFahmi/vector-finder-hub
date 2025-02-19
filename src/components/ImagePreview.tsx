@@ -9,11 +9,11 @@ interface ImagePreviewProps {
 
 const ImagePreview = ({ imageUrl, onClear }: ImagePreviewProps) => {
   return (
-    <div className="relative rounded-xl overflow-hidden">
+    <div className="relative rounded-xl overflow-hidden max-w-xl mx-auto">
       <img
         src={imageUrl}
         alt="Preview"
-        className="w-full h-64 object-cover rounded-xl"
+        className="w-full max-h-[400px] object-contain rounded-xl bg-gray-100"
       />
       <button
         onClick={onClear}
