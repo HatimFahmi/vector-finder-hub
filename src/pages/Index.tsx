@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { pipeline } from '@huggingface/transformers';
 import { useToast } from '@/components/ui/use-toast';
@@ -35,12 +34,11 @@ const Index = () => {
       console.log('Classification results:', results);
       setProgress(80); // Image processed
       
-      // For demo purposes, we're using placeholder similar images
-      // In a real app, you would use the embeddings to find similar images
+      // Using known working Unsplash images
       setSimilarImages([
-        'https://images.unsplash.com/photo-1682687982501-1e58ab814714',
-        'https://images.unsplash.com/photo-1682687982167-d7fb3ed8541d',
-        'https://images.unsplash.com/photo-1682687982465-c1e91c4b6b46',
+        'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b',
+        'https://images.unsplash.com/photo-1518770660439-4636190af475',
+        'https://images.unsplash.com/photo-1461749280684-dccba630e2f6'
       ]);
       setProgress(100); // Similar images found
 
