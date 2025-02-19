@@ -18,13 +18,15 @@ const Index = () => {
       const imageUrl = URL.createObjectURL(file);
       setSelectedImage(imageUrl);
 
-      // Initialize the image classification pipeline
-      const classifier = await pipeline('image-classification', 'microsoft/resnet-50', {
-        quantized: false
-      });
+      // Initialize the image classification pipeline with a browser-optimized model
+      const classifier = await pipeline(
+        'image-classification',
+        'onnx-community/mobilenetv4_conv_small.e2400_r224_in1k'
+      );
 
       // Process the image
       const results = await classifier(imageUrl);
+      console.log('Classification results:', results);
       
       // For demo purposes, we're using placeholder similar images
       // In a real app, you would use the embeddings to find similar images
