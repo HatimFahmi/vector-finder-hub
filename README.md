@@ -1,69 +1,44 @@
-# Welcome to your Lovable project
 
-## Project info
+# Vector Image Finder
 
-**URL**: https://lovable.dev/projects/f3e93dbf-5997-41cd-941f-3b56461ecfc2
+A React-based image similarity search application that uses machine learning to find visually similar images. The application leverages Hugging Face Transformers for image processing and Supabase for storage and vector similarity search.
 
-## How can I edit this code?
+## Features
 
-There are several ways of editing your application.
+- **Image Upload**: Users can upload images through drag-and-drop or file selection
+- **Real-time Progress**: Visual feedback during image processing and similarity search
+- **Similar Image Results**: Displays a grid of visually similar images based on the uploaded image
+- **Download Options**: Each similar image can be downloaded with a single click
+- **Responsive Design**: Works seamlessly across different screen sizes
 
-**Use Lovable**
+## Technology Stack
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/f3e93dbf-5997-41cd-941f-3b56461ecfc2) and start prompting.
+- **Frontend**: React + TypeScript + Vite
+- **UI Components**: shadcn/ui + Tailwind CSS
+- **Machine Learning**: Hugging Face Transformers (MobileNetV4)
+- **Backend & Storage**: Supabase (PostgreSQL with pgvector)
 
-Changes made via Lovable will be committed automatically to this repo.
+## Project Structure
 
-**Use your preferred IDE**
+- `/src/components/`: React components including ImageUploader, ImagePreview, and ResultGrid
+- `/src/lib/`: Utility functions and Supabase client configuration
+- `/supabase/`: Supabase functions and database migrations
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## Local Development
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+```bash
+# Install dependencies
+npm install
 
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Start the development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+## Notes
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+- The application uses the `mobilenetv4_conv_small.e2400_r224_in1k` model for generating image embeddings
+- Similar images are found using vector similarity search in Supabase with pgvector
+- Progress indicators show real-time status during image processing
 
-**Use GitHub Codespaces**
+For detailed setup instructions and configuration, visit the [Lovable documentation](https://docs.lovable.dev/).
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with .
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/f3e93dbf-5997-41cd-941f-3b56461ecfc2) and click on Share -> Publish.
-
-## I want to use a custom domain - is that possible?
-
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
