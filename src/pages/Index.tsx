@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { pipeline } from '@huggingface/transformers';
 import { useToast } from '@/components/ui/use-toast';
@@ -5,6 +6,7 @@ import { Progress } from '@/components/ui/progress';
 import ImageUploader from '@/components/ImageUploader';
 import ImagePreview from '@/components/ImagePreview';
 import ResultGrid from '@/components/ResultGrid';
+import { uploadImage, getSimilarImages, supabase } from '@/lib/supabase';
 
 const Index = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -18,29 +20,29 @@ const Index = () => {
       setLoading(true);
       setProgress(10); // Start progress
       
-      const imageUrl = URL.createObjectURL(file);
-      setSelectedImage(imageUrl);
-      setProgress(30); // Image loaded
+      // Upload image to Supabase Storage
+      const imagePath = await uploadImage(file);
+      setProgress(30);
 
-      // Initialize the image classification pipeline with a browser-optimized model
+      // Get public URL for the uploaded image
+      const { data: { publicUrl } } = supabase.storage
+        .from('images')
+        .getPublicUrl(imagePath);
+      
+      setSelectedImage(publicUrl);
+      setProgress(50);
+
+      // Initialize the image classification pipeline
       const classifier = await pipeline(
         'image-classification',
         'onnx-community/mobilenetv4_conv_small.e2400_r224_in1k'
       );
-      setProgress(60); // Model loaded
+      setProgress(70);
 
-      // Process the image
-      const results = await classifier(imageUrl);
-      console.log('Classification results:', results);
-      setProgress(80); // Image processed
-      
-      // Using known working Unsplash images
-      setSimilarImages([
-        'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b',
-        'https://images.unsplash.com/photo-1518770660439-4636190af475',
-        'https://images.unsplash.com/photo-1461749280684-dccba630e2f6'
-      ]);
-      setProgress(100); // Similar images found
+      // Get similar images
+      const similarResults = await getSimilarImages(publicUrl);
+      setSimilarImages(similarResults.map((result: any) => result.url));
+      setProgress(100);
 
       toast({
         title: "Success",
@@ -57,7 +59,7 @@ const Index = () => {
       setTimeout(() => {
         setLoading(false);
         setProgress(0);
-      }, 500); // Reset progress after a small delay
+      }, 500);
     }
   };
 
@@ -114,9 +116,9 @@ const Index = () => {
               <div className="flex justify-center">
                 <div className="text-sm text-gray-600">
                   {progress < 30 && "Uploading image..."}
-                  {progress >= 30 && progress < 60 && "Loading model..."}
-                  {progress >= 60 && progress < 80 && "Processing image..."}
-                  {progress >= 80 && progress < 100 && "Finding similar images..."}
+                  {progress >= 30 && progress < 50 && "Processing upload..."}
+                  {progress >= 50 && progress < 70 && "Loading model..."}
+                  {progress >= 70 && progress < 100 && "Finding similar images..."}
                   {progress === 100 && "Complete!"}
                 </div>
               </div>
